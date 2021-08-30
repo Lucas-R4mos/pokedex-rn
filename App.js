@@ -14,6 +14,7 @@ import {
 	PressStart2P_400Regular,
 	useFonts
 } from '@expo-google-fonts/press-start-2p'
+import { Roboto_400Regular } from '@expo-google-fonts/roboto';
 
 export default function App() {
 	const [isLoading, setLoading] = useState(true)
@@ -24,7 +25,8 @@ export default function App() {
 	const [isModalLoading, setModalLoading] = useState(true)
 
 	let [fontsLoaded] = useFonts({
-		PressStart2P_400Regular
+		PressStart2P_400Regular,
+		Roboto_400Regular
 	})
 
 	useEffect(() => {
@@ -80,7 +82,7 @@ export default function App() {
 		<SafeAreaView style={styles.mainContainer}>
 			<View style={styles.mainCard}>
 				<Text style={styles.Header} >Pokedex</Text>
-				<Text style={{ paddingBottom: 20 }}>
+				<Text style={styles.RobotoText}>
 					Choose a Pokémon:
 				</Text>
 				<View style={styles.PickerContainer}>
@@ -94,7 +96,7 @@ export default function App() {
 							pokeList === []
 								? <></>
 								: pokeList.map((poke, index) => {
-									return <Picker.Item key={index} label={poke.label} value={poke.value} style={styles.PickerItem} />
+									return <Picker.Item key={index} label={poke.label} value={poke.value} style={styles.RobotoText} />
 								})
 						}
 					</Picker>
@@ -122,12 +124,12 @@ export default function App() {
 											method: 'GET',
 										}}
 									/>
-									<Text>{capitalizeFirstLetter(pokeData.name)}</Text>
-									<Text>Podekex nº {pokeData.id}</Text>
-									<Text>Type(s):</Text>
+									<Text style={styles.RobotoText}>{capitalizeFirstLetter(pokeData.name)}</Text>
+									<Text style={styles.RobotoText}>Podekex nº {pokeData.id}</Text>
+									<Text style={styles.RobotoText}>Type(s):</Text>
 									{
 										pokeData.types.map((type) => {
-											return <Text key={type.slot}>    - {capitalizeFirstLetter(type.type.name)}</Text>
+											return <Text style={styles.RobotoText} key={type.slot}>    - {capitalizeFirstLetter(type.type.name)}</Text>
 										})
 									}
 								</View>
@@ -163,6 +165,10 @@ const styles = StyleSheet.create({
 		fontSize: 50,
 		fontFamily: 'PressStart2P_400Regular'
 	},
+	RobotoText: {
+		fontSize: 18,
+		fontFamily: 'Roboto_400Regular'
+	},
 	mainCard: {
 		flex: 1,
 		alignItems: 'center',
@@ -190,7 +196,8 @@ const styles = StyleSheet.create({
 		backgroundColor: '#EFEFEF',
 		paddingTop: 10,
 		paddingBottom: 10,
-		borderRadius: 5
+		borderRadius: 5,
+		marginTop: 20
 	},
 	Picker: {
 		width: 200
