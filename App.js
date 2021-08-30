@@ -11,6 +11,10 @@ import {
 	Image
 } from 'react-native';
 import { Dropdown } from 'sharingan-rn-modal-dropdown';
+import {
+	PressStart2P_400Regular,
+	useFonts
+} from '@expo-google-fonts/press-start-2p'
 
 export default function App() {
 	const [isLoading, setLoading] = useState(true)
@@ -19,6 +23,10 @@ export default function App() {
 	const [modalVisible, setModalVisible] = useState(false)
 	const [pokeData, setPokeData] = useState({})
 	const [isModalLoading, setModalLoading] = useState(true)
+
+	let [fontsLoaded] = useFonts({
+		PressStart2P_400Regular
+	})
 
 	useEffect(() => {
 		loadData()
@@ -61,7 +69,7 @@ export default function App() {
 
 	}
 
-	if (isLoading) {
+	if (isLoading || !fontsLoaded) {
 		return (
 			<SafeAreaView style={styles.mainContainer}>
 				<ActivityIndicator size={100} color='#212121' />
@@ -71,23 +79,23 @@ export default function App() {
 
 	return (
 		<SafeAreaView style={styles.mainContainer}>
-			<KeyboardAvoidingView style={styles.secContainer}>
-				<View style={styles.mainCard}>
-					<Text style={styles.Header} >Pokedex</Text>
-					<Text style={{ paddingBottom: 20 }}>
-						Choose a Pokémon:
-					</Text>
-					<Dropdown
-						mainContainerStyle={styles.dropdown}
-						label='I choose you!'
-						data={pokeList}
-						// enableSearch
-						value={selection}
-						onChange={handleDropdownChange}
-						disableSort
-					/>
-				</View>
-			</KeyboardAvoidingView>
+			{/* <KeyboardAvoidingView style={styles.secContainer}> */}
+			<View style={styles.mainCard}>
+				<Text style={styles.Header} >Pokedex</Text>
+				<Text style={{ paddingBottom: 20 }}>
+					Choose a Pokémon:
+				</Text>
+				<Dropdown
+					mainContainerStyle={styles.dropdown}
+					label='I choose you!'
+					data={pokeList}
+					// enableSearch
+					value={selection}
+					onChange={handleDropdownChange}
+					disableSort
+				/>
+			</View>
+			{/* </KeyboardAvoidingView> */}
 			<Modal
 				animationType="slide"
 				transparent={true}
@@ -111,10 +119,11 @@ export default function App() {
 										}}
 									/>
 									<Text>{capitalizeFirstLetter(pokeData.name)}</Text>
+									<Text>Podekex nº {pokeData.order}</Text>
 									<Text>Type(s):</Text>
 									{
 										pokeData.types.map((type) => {
-											return <Text>- {capitalizeFirstLetter(type.type.name)}</Text>
+											return <Text key={type.slot}>    - {capitalizeFirstLetter(type.type.name)}</Text>
 										})
 									}
 								</View>
@@ -122,7 +131,6 @@ export default function App() {
 									onPress={() => { setModalVisible(false) }}
 									title={'x'}
 									color='#121212'
-									
 								/>
 							</>
 					}
@@ -148,7 +156,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	Header: {
-		fontSize: 50
+		fontSize: 50,
+		fontFamily: 'PressStart2P_400Regular'
 	},
 	mainCard: {
 		flex: 1,
