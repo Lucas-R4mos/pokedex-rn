@@ -4,13 +4,12 @@ import {
 	Text,
 	View,
 	SafeAreaView,
-	KeyboardAvoidingView,
 	ActivityIndicator,
 	Modal,
 	Button,
 	Image
 } from 'react-native';
-import { Dropdown } from 'sharingan-rn-modal-dropdown';
+import { Picker } from '@react-native-picker/picker'
 import {
 	PressStart2P_400Regular,
 	useFonts
@@ -37,7 +36,7 @@ export default function App() {
 	}
 
 	const loadData = async () => {
-		const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
+		const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1500')
 		const data = await res.json()
 		const filteredData = data.results.map((poke) => {
 			let pokeInitData = {}
@@ -79,23 +78,28 @@ export default function App() {
 
 	return (
 		<SafeAreaView style={styles.mainContainer}>
-			{/* <KeyboardAvoidingView style={styles.secContainer}> */}
 			<View style={styles.mainCard}>
 				<Text style={styles.Header} >Pokedex</Text>
 				<Text style={{ paddingBottom: 20 }}>
 					Choose a Pokémon:
 				</Text>
-				<Dropdown
-					mainContainerStyle={styles.dropdown}
-					label='I choose you!'
-					data={pokeList}
-					// enableSearch
-					value={selection}
-					onChange={handleDropdownChange}
-					disableSort
-				/>
+				<View style={styles.PickerContainer}>
+					<Picker
+						selectedValue={selection}
+						onValueChange={handleDropdownChange}
+						mode={'dialog'}
+						style={styles.Picker}
+					>
+						{
+							pokeList === []
+								? <></>
+								: pokeList.map((poke, index) => {
+									return <Picker.Item key={index} label={poke.label} value={poke.value} style={styles.PickerItem} />
+								})
+						}
+					</Picker>
+				</View>
 			</View>
-			{/* </KeyboardAvoidingView> */}
 			<Modal
 				animationType="slide"
 				transparent={true}
@@ -113,13 +117,13 @@ export default function App() {
 									<Image
 										source={{
 											uri: pokeData.sprites.other["official-artwork"].front_default,
-											width: 150,
-											height: 150,
+											width: 225,
+											height: 225,
 											method: 'GET',
 										}}
 									/>
 									<Text>{capitalizeFirstLetter(pokeData.name)}</Text>
-									<Text>Podekex nº {pokeData.order}</Text>
+									<Text>Podekex nº {pokeData.id}</Text>
 									<Text>Type(s):</Text>
 									{
 										pokeData.types.map((type) => {
@@ -146,9 +150,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		backgroundColor: '#FB1B1B',
 		alignItems: 'center',
-		justifyContent: 'center',
+		justifyContent: 'flex-start',
 		minWidth: '100%',
-		paddingTop: 100
+		paddingBottom: 300
 	},
 	secContainer: {
 		flex: 1,
@@ -163,9 +167,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
-	},
-	dropdown: {
-		width: 200
 	},
 	modalView: {
 		backgroundColor: "white",
@@ -185,7 +186,13 @@ const styles = StyleSheet.create({
 		borderTopLeftRadius: 30,
 		borderTopRightRadius: 30,
 	},
-	dataContainer: {
-
-	}
+	PickerContainer: {
+		backgroundColor: '#EFEFEF',
+		paddingTop: 10,
+		paddingBottom: 10,
+		borderRadius: 5
+	},
+	Picker: {
+		width: 200
+	},
 });
